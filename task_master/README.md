@@ -1,16 +1,21 @@
-# task_master
+# Task Master
 
-A new Flutter project.
+Task Master is a Flutter app designed to help you manage your tasks efficiently. It supports full API CRUD operations, allowing you to create, read, update, and delete tasks seamlessly.
+
+## Features
+- Add new tasks
+- Update existing tasks
+- Delete tasks
+- View all tasks
 
 ## Getting Started
+To get a local copy up and running, follow these simple steps.
 
-This project is a starting point for a Flutter application.
+### Prerequisites
+- Flutter SDK
+- A code editor like VS Code
 
-A few resources to get you started if this is your first Flutter project:
+### Installation
+1. Clone the repo
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+   git clone https://github.com/zaidahmedkhan/Task_Master
