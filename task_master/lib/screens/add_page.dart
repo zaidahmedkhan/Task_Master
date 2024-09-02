@@ -50,8 +50,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
     );
   }
 
-  Future<void> submitData() async{
-
+  Future<void> submitData() async {
     // get the data from the text fields
     final title = titleController.text;
     final description = descriptionController.text;
@@ -66,35 +65,29 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
     final url = 'https://api.nstack.in/v1/todos';
     final uri = Uri.parse(url);
-    final response = await http.post(
-      uri, 
-      body: jsonEncode(body),
-      headers: {
-        'Content-Type':'application/json',
-      }
-      
-      );
+    final response = await http.post(uri, body: jsonEncode(body), 
+    headers: {
+      'Content-Type': 'application/json',
+    });
 
     // show success or fail message based on status
 
-    if(response.statusCode == 201){
+    if (response.statusCode == 201) {
+      titleController.text = '';
+      descriptionController.text = '';
       showSuccessMessage("Task Create Successfully");
-
     } else {
-      showSuccessMessage("Failed to create Task");
-      
+      showErrorMessage("Failed to create Task");
     }
-
-  
   }
 
-
-
-
-  void showSuccessMessage(String message){
-
+  void showSuccessMessage(String message) {
     final snackbar = SnackBar(content: Text(message));
     ScaffoldMessenger.of(context).showSnackBar(snackbar);
+  }
 
+   void showErrorMessage(String message) {
+    final snackbar = SnackBar(content: Text(message, style: TextStyle(color: Colors.white),), backgroundColor: Colors.red,);
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 }
