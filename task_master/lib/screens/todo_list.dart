@@ -59,13 +59,13 @@ class _TodoListPageState extends State<TodoListPage> {
                     },
                     itemBuilder: (context) {
                       return [
-                        PopupMenuItem(
-                          child: Text("Edit"),
+                        const PopupMenuItem(
                           value: "edit",
+                          child: Text("Edit"),
                         ),
-                        PopupMenuItem(
-                          child: Text("Delete"),
+                        const PopupMenuItem(
                           value: "delete",
+                          child: Text("Delete"),
                         )
                       ];
                     },
@@ -88,11 +88,16 @@ class _TodoListPageState extends State<TodoListPage> {
     fetchTodo();
   }
 
-  void navigateToEditPage(Map item) {
+  Future<void> navigateToEditPage(Map item) async {
     final route = MaterialPageRoute(
       builder: (context) => AddTaskPage(todo: item),
     );
-    Navigator.push(context, route);
+    await Navigator.push(context, route);
+
+    setState(() {
+      isLoading = true;
+    });
+    fetchTodo();
   }
 
   Future<void> fetchTodo() async {

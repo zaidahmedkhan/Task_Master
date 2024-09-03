@@ -68,7 +68,37 @@ class _AddTaskPageState extends State<AddTaskPage> {
     );
   }
 
-  Future<void> updateData() async {}
+  Future<void> updateData() async {
+    final todo = widget.todo;
+    if (todo == null) {
+      print("you can not call todo without todo data");
+      return;
+    }
+
+    final id = todo['_id'];
+    // final isCompleted = todo['is_completed'];
+
+    final title = titleController.text;
+    final description = descriptionController.text;
+
+    final body = {
+      "title": title,
+      "description": description,
+      "is_completed": false,
+    };
+
+    final url = 'https://api.nstack.in/v1/todos/$id';
+    final uri = Uri.parse(url);
+
+    final response = await http.put(uri,
+        body: jsonEncode(body), headers: {'Content-Type': 'application/json'});
+
+    if (response.statusCode == 200) {
+      showSuccessMessage("Updation Success");
+    } else {
+      showErrorMessage("Updation Failed");
+    }
+  }
 
   Future<void> submitData() async {
     // get the data from the text fields
