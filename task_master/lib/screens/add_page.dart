@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class AddTaskPage extends StatefulWidget {
-  const AddTaskPage({super.key});
+  final Map? todo;
+  const AddTaskPage({super.key, this.todo});
 
   @override
   State<AddTaskPage> createState() => _AddTaskPageState();
@@ -14,13 +15,28 @@ class _AddTaskPageState extends State<AddTaskPage> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
 
+  bool isEdit = false;
+
+  @override
+  void initState() {
+    super.initState();
+    final todo = widget.todo;
+    if (todo != null) {
+      isEdit = true;
+      final title = todo['title'];
+      final description = todo['description'];
+      titleController.text = title;
+      descriptionController.text = description;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         elevation: 1.0,
         centerTitle: true,
-        title: const Text("Add Task"),
+        title: Text(isEdit ? "Edit Task" : "Add Task"),
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
@@ -44,11 +60,15 @@ class _AddTaskPageState extends State<AddTaskPage> {
           const SizedBox(
             height: 20,
           ),
-          ElevatedButton(onPressed: submitData, child: const Text("Submit"))
+          ElevatedButton(
+              onPressed: isEdit ? updateData : submitData,
+              child: Text(isEdit ? "Update" : "Submit"))
         ],
       ),
     );
   }
+
+  Future<void> updateData() async {}
 
   Future<void> submitData() async {
     // get the data from the text fields
@@ -65,8 +85,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
     final url = 'https://api.nstack.in/v1/todos';
     final uri = Uri.parse(url);
-    final response = await http.post(uri, body: jsonEncode(body), 
-    headers: {
+    final response = await http.post(uri, body: jsonEncode(body), headers: {
       'Content-Type': 'application/json',
     });
 
@@ -86,8 +105,14 @@ class _AddTaskPageState extends State<AddTaskPage> {
     ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 
-   void showErrorMessage(String message) {
-    final snackbar = SnackBar(content: Text(message, style: TextStyle(color: Colors.white),), backgroundColor: Colors.red,);
+  void showErrorMessage(String message) {
+    final snackbar = SnackBar(
+      content: Text(
+        message,
+        style: TextStyle(color: Colors.white),
+      ),
+      backgroundColor: Colors.red,
+    );
     ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 }
