@@ -35,43 +35,50 @@ class _TodoListPageState extends State<TodoListPage> {
       ),
       body: Visibility(
         visible: isLoading,
-        child: Center(
+        child: const Center(
           child: CircularProgressIndicator(),
         ),
         replacement: RefreshIndicator(
           onRefresh: fetchTodo,
-          child: ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                final item = items[index] as Map;
-                final id = item['_id'] as String;
-                return ListTile(
-                  leading: Text("${index + 1}"),
-                  title: Text(item['title']),
-                  subtitle: Text(item['description']),
-                  trailing: PopupMenuButton(
-                    onSelected: (value) {
-                      if (value == "edit") {
-                        navigateToEditPage(item);
-                      } else if (value == "delete") {
-                        deleteById(id);
-                      }
-                    },
-                    itemBuilder: (context) {
-                      return [
-                        const PopupMenuItem(
-                          value: "edit",
-                          child: Text("Edit"),
-                        ),
-                        const PopupMenuItem(
-                          value: "delete",
-                          child: Text("Delete"),
-                        )
-                      ];
-                    },
-                  ),
-                );
-              }),
+          child: Visibility(
+            visible: items.isNotEmpty,
+            replacement: const Center(child: Text("No Tasks", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),),),
+            child: ListView.builder(
+                itemCount: items.length,
+                padding: const  EdgeInsets.all(10),
+                itemBuilder: (context, index) {
+                  final item = items[index] as Map;
+                  final id = item['_id'] as String;
+                  return Card(
+                    child: ListTile(
+                      leading: Text("${index + 1}"),
+                      title: Text(item['title']),
+                      subtitle: Text(item['description']),
+                      trailing: PopupMenuButton(
+                        onSelected: (value) {
+                          if (value == "edit") {
+                            navigateToEditPage(item);
+                          } else if (value == "delete") {
+                            deleteById(id);
+                          }
+                        },
+                        itemBuilder: (context) {
+                          return [
+                            const PopupMenuItem(
+                              value: "edit",
+                              child: Text("Edit"),
+                            ),
+                            const PopupMenuItem(
+                              value: "delete",
+                              child: Text("Delete"),
+                            )
+                          ];
+                        },
+                      ),
+                    ),
+                  );
+                }),
+          ),
         ),
       ),
     );
