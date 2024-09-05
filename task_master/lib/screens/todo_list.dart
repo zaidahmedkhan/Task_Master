@@ -1,8 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:task_master/screens/add_page.dart';
-import 'package:http/http.dart' as http;
+import 'package:task_master/services/task_services.dart';
+import 'package:task_master/utils/snackbar_helpers.dart';
 
 class TodoListPage extends StatefulWidget {
   const TodoListPage({super.key});
@@ -42,10 +41,15 @@ class _TodoListPageState extends State<TodoListPage> {
           onRefresh: fetchTodo,
           child: Visibility(
             visible: items.isNotEmpty,
-            replacement: const Center(child: Text("No Tasks", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),),),
+            replacement: const Center(
+              child: Text(
+                "No Tasks",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+              ),
+            ),
             child: ListView.builder(
                 itemCount: items.length,
-                padding: const  EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 itemBuilder: (context, index) {
                   final item = items[index] as Map;
                   final id = item['_id'] as String;
@@ -108,17 +112,14 @@ class _TodoListPageState extends State<TodoListPage> {
   }
 
   Future<void> fetchTodo() async {
-    final url = 'https://api.nstack.in/v1/todos?page=1&limit=10';
-    final uri = Uri.parse(url);
+    final response = await TaskService.fetchTodos();
 
-    final response = await http.get(uri);
-    if (response.statusCode == 200) {
-      final json = jsonDecode(response.body) as Map;
-      final result = json['items'] as List;
-
+    if (response != null) {
       setState(() {
-        items = result;
+        items = response;
       });
+    } else {
+      showErrorMessage(context, message: "Something went wrong!");
     }
 
     setState(() {
@@ -127,29 +128,16 @@ class _TodoListPageState extends State<TodoListPage> {
   }
 
   Future<void> deleteById(String id) async {
-    final url = 'https://api.nstack.in/v1/todos/$id';
-    final uri = Uri.parse(url);
-    final response = await http.delete(uri);
+    final isSuccess = await TaskService.deleteById(id);
 
-    if (response.statusCode == 200) {
+    if (isSuccess) {
       final filtered = items.where((element) => element['_id'] != id).toList();
 
       setState(() {
         items = filtered;
       });
     } else {
-      showErrorMessage("Deletion Failed");
+      showErrorMessage(context, message: "Deletion Failed");
     }
-  }
-
-  void showErrorMessage(String message) {
-    final snackbar = SnackBar(
-      content: Text(
-        message,
-        style: TextStyle(color: Colors.white),
-      ),
-      backgroundColor: Colors.red,
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 }

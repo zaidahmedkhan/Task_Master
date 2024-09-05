@@ -1,7 +1,7 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:task_master/utils/snackbar_helpers.dart';
 
 class AddTaskPage extends StatefulWidget {
   final Map? todo;
@@ -71,13 +71,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
   Future<void> updateData() async {
     final todo = widget.todo;
     if (todo == null) {
-      print("you can not call todo without todo data");
       return;
     }
 
     final id = todo['_id'];
-    // final isCompleted = todo['is_completed'];
-
     final title = titleController.text;
     final description = descriptionController.text;
 
@@ -94,14 +91,13 @@ class _AddTaskPageState extends State<AddTaskPage> {
         body: jsonEncode(body), headers: {'Content-Type': 'application/json'});
 
     if (response.statusCode == 200) {
-      showSuccessMessage("Updation Success");
+      showSuccessMessage(context, message: "Updation Success");
     } else {
-      showErrorMessage("Updation Failed");
+      showErrorMessage(context, message: "Updation Failed");
     }
   }
 
   Future<void> submitData() async {
-    // get the data from the text fields
     final title = titleController.text;
     final description = descriptionController.text;
 
@@ -111,38 +107,18 @@ class _AddTaskPageState extends State<AddTaskPage> {
       "is_completed": false,
     };
 
-    // submit the data to the server
-
     final url = 'https://api.nstack.in/v1/todos';
     final uri = Uri.parse(url);
     final response = await http.post(uri, body: jsonEncode(body), headers: {
       'Content-Type': 'application/json',
     });
 
-    // show success or fail message based on status
-
     if (response.statusCode == 201) {
       titleController.text = '';
       descriptionController.text = '';
-      showSuccessMessage("Task Create Successfully");
+      showSuccessMessage(context, message: "Task Create Successfully");
     } else {
-      showErrorMessage("Failed to create Task");
+      showErrorMessage(context, message: "Failed to create Task");
     }
-  }
-
-  void showSuccessMessage(String message) {
-    final snackbar = SnackBar(content: Text(message));
-    ScaffoldMessenger.of(context).showSnackBar(snackbar);
-  }
-
-  void showErrorMessage(String message) {
-    final snackbar = SnackBar(
-      content: Text(
-        message,
-        style: TextStyle(color: Colors.white),
-      ),
-      backgroundColor: Colors.red,
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 }
