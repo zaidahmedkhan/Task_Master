@@ -30,7 +30,9 @@ class _TodoListPageState extends State<TodoListPage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: navigateToAddPage,
-        label: CircleAvatar(child: Text("Add Task")),
+        label: Text("Add Task"),
+        backgroundColor: Color(0xFFE91E63),
+        icon: const Icon(Icons.add),
       ),
       body: Visibility(
         visible: isLoading,
@@ -54,10 +56,34 @@ class _TodoListPageState extends State<TodoListPage> {
                   final item = items[index] as Map;
                   final id = item['_id'] as String;
                   return Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    elevation: 5,
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                     child: ListTile(
-                      leading: Text("${index + 1}"),
-                      title: Text(item['title']),
-                      subtitle: Text(item['description']),
+                      leading: CircleAvatar(
+                          backgroundColor: Color(0xFFE91E63),
+                          child: Text(
+                            "${index + 1}",
+                            style: TextStyle(color: Colors.white),
+                          )),
+                      title: Text(
+                        item['title'],
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                      ),
+                      subtitle: Text(
+                        item['description'],
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
+                      ),
                       trailing: PopupMenuButton(
                         onSelected: (value) {
                           if (value == "edit") {
@@ -89,8 +115,17 @@ class _TodoListPageState extends State<TodoListPage> {
   }
 
   Future<void> navigateToAddPage() async {
-    final route = MaterialPageRoute(
-      builder: (context) => AddTaskPage(),
+    final route = PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => AddTaskPage(),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var tween = Tween(begin: 0.0, end: 1.0);
+        var fadeAnimation = animation.drive(tween);
+
+        return FadeTransition(
+          opacity: fadeAnimation,
+          child: child,
+        );
+      },
     );
     await Navigator.push(context, route);
     setState(() {
@@ -100,8 +135,18 @@ class _TodoListPageState extends State<TodoListPage> {
   }
 
   Future<void> navigateToEditPage(Map item) async {
-    final route = MaterialPageRoute(
-      builder: (context) => AddTaskPage(todo: item),
+    final route = PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          AddTaskPage(todo: item),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var tween = Tween(begin: 0.0, end: 1.0);
+        var fadeAnimation = animation.drive(tween);
+
+        return FadeTransition(
+          opacity: fadeAnimation,
+          child: child,
+        );
+      },
     );
     await Navigator.push(context, route);
 

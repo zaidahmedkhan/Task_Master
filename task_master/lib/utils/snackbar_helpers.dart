@@ -12,6 +12,12 @@ void showErrorMessage(BuildContext context, {required String message}) {
 }
 
 void showSuccessMessage(BuildContext context, {required String message}) {
-  final snackbar = SnackBar(content: Text(message));
+  final snackbar = SnackBar(
+    content: Text(
+      message,
+      style: TextStyle(color: Colors.white),
+    ),
+    backgroundColor: Colors.green,
+  );
   ScaffoldMessenger.of(context).showSnackBar(snackbar);
 }

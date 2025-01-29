@@ -39,19 +39,35 @@ class _AddTaskPageState extends State<AddTaskPage> {
         title: Text(isEdit ? "Edit Task" : "Add Task"),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20),
         children: [
           TextField(
             controller: titleController,
-            decoration: const InputDecoration(hintText: "Title"),
+            decoration: InputDecoration(
+              hintText: "Title",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: Colors.blueAccent),
+              ),
+              filled: true,
+              fillColor: Color(0xFF1E1E1E),
+              contentPadding: EdgeInsets.all(15),
+            ),
           ),
           const SizedBox(
             height: 20,
           ),
           TextField(
             controller: descriptionController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               hintText: "Description",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: BorderSide(color: Colors.blueAccent),
+              ),
+              filled: true,
+              fillColor: Color(0xFF1E1E1E),
+              contentPadding: EdgeInsets.all(15),
             ),
             keyboardType: TextInputType.multiline,
             minLines: 5,
@@ -61,8 +77,19 @@ class _AddTaskPageState extends State<AddTaskPage> {
             height: 20,
           ),
           ElevatedButton(
-              onPressed: isEdit ? updateData : submitData,
-              child: Text(isEdit ? "Update" : "Submit"))
+            onPressed: isEdit ? updateData : submitData,
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+              backgroundColor: Color(0xFFE91E63),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: Text(
+              isEdit ? "Update" : "Submit",
+              style: TextStyle(fontSize: 18, color: Colors.white),
+            ),
+          )
         ],
       ),
     );
